@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Identity.Client" Version="4.91.0" />
+    <!-- Pinned to Flow Weaver's client SDK (ModelContextProtocol.Core 2.0.0-preview.3): its
+         'server/discover' wire format is incompatible with 2.0.0+ servers. Upgrade both together. -->
+    <PackageReference Include="ModelContextProtocol.AspNetCore" Version="2.0.0-preview.3" />
+  </ItemGroup>
+
+</Project>

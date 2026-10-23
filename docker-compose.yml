@@ -1,0 +1,31 @@
+services:
+  onedrive-mcp:
+    build: .
+    image: onedrive-mcp:local
+    container_name: onedrive-mcp
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      # Host access for manual testing only; Flow Weaver reaches it over the docker network.
+      - "127.0.0.1:${ONEDRIVE_MCP_PORT:-8090}:8080"
+    volumes:
+      - onedrive_mcp_data:/data
+    networks:
+      - default
+      - flow-weaver
+      - nashira
+
+volumes:
+  onedrive_mcp_data:
+
+networks:
+  # Network created by Flow Weaver's compose project ("flow-weaver" + "flow-weaver-net").
+  # Joining it lets the FW backend call http://onedrive-mcp:8080/mcp.
+  flow-weaver:
+    external: true
+    name: ${FLOW_WEAVER_NETWORK:-flow-weaver_flow-weaver-net}
+  # Network created by Nashira's compose project ("nashira" + "nashira-net").
+  # Joining it lets the Nashira backend call http://onedrive-mcp:8080/mcp.
+  nashira:
+    external: true
+    name: ${NASHIRA_NETWORK:-nashira_nashira-net}
