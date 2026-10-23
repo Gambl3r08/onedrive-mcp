@@ -1,0 +1,28 @@
+# Standalone compose for a host that runs Nashira but not Flow Weaver.
+#   docker compose -f docker-compose.nashira.yml up -d --build
+#   docker compose -f docker-compose.nashira.yml run --rm onedrive-mcp login
+services:
+  onedrive-mcp:
+    build: .
+    image: onedrive-mcp:local
+    container_name: onedrive-mcp
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      # Host access for manual testing only; Nashira reaches it over the docker network.
+      - "127.0.0.1:${ONEDRIVE_MCP_PORT:-8090}:8080"
+    volumes:
+      - onedrive_mcp_data:/data
+    networks:
+      - default
+      - nashira
+
+volumes:
+  onedrive_mcp_data:
+
+networks:
+  # Network of the Nashira backend container on this host. Check it with:
+  #   docker inspect nashira-backend --format '{{range $k,$v := .NetworkSettings.Networks}}{{$k}} {{end}}'
+  nashira:
+    external: true
+    name: ${NASHIRA_NETWORK:-nashira_nashira-net}
